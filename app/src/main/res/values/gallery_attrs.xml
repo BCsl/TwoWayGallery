@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Reference to an array resource that will populate a list/adapter. -->
+    <attr name="entries" format="reference"/>
+    <!-- Specifies how to place the content of an object, both
+     on the x- and y-axis, within the object itself. -->
+    <attr name="gravity">
+        <!-- Push object to the top of its container, not changing its size. -->
+        <flag name="top" value="0x30"/>
+        <!-- Push object to the bottom of its container, not changing its size. -->
+        <flag name="bottom" value="0x50"/>
+        <!-- Push object to the left of its container, not changing its size. -->
+        <flag name="left" value="0x03"/>
+        <!-- Push object to the right of its container, not changing its size. -->
+        <flag name="right" value="0x05"/>
+        <!-- Place object in the vertical center of its container, not changing its size. -->
+        <flag name="center_vertical" value="0x10"/>
+        <!-- Grow the vertical size of the object if needed so it completely fills its container. -->
+        <flag name="fill_vertical" value="0x70"/>
+        <!-- Place object in the horizontal center of its container, not changing its size. -->
+        <flag name="center_horizontal" value="0x01"/>
+        <!-- Grow the horizontal size of the object if needed so it completely fills its container. -->
+        <flag name="fill_horizontal" value="0x07"/>
+        <!-- Place the object in the center of its container in both the vertical and horizontal axis, not changing its size. -->
+        <flag name="center" value="0x11"/>
+        <!-- Grow the horizontal and vertical size of the object if needed so it completely fills its container. -->
+        <flag name="fill" value="0x77"/>
+        <!-- Additional option that can be set to have the top and/or bottom edges of
+             the child clipped to its container's bounds.
+             The clip will be based on the vertical gravity: a top gravity will clip the bottom
+             edge, a bottom gravity will clip the top edge, and neither will clip both edges. -->
+        <flag name="clip_vertical" value="0x80"/>
+        <!-- Additional option that can be set to have the left and/or right edges of
+             the child clipped to its container's bounds.
+             The clip will be based on the horizontal gravity: a left gravity will clip the right
+             edge, a right gravity will clip the left edge, and neither will clip both edges. -->
+        <flag name="clip_horizontal" value="0x08"/>
+    </attr>
+
+    <!-- Default Gallery style. -->
+    <attr name="galleryStyle" format="reference"/>
+
+    <declare-styleable name="TwoWayGalleryGallery">
+        <attr name="gravity"/>
+        <!-- Sets how long a transition animation should run (in milliseconds)
+             when layout has changed.  Only relevant if animation is turned on. -->
+        <attr name="animationDuration" format="integer" min="0"/>
+        <attr name="spacing" format="dimension"/>
+        <!-- Sets the alpha on the items that are not selected. -->
+        <attr name="unselectedAlpha" format="float"/>
+        <!-- Standard orientation constant. -->
+
+        <attr name="orientation">
+            <!-- Defines an horizontal widget. -->
+            <enum name="horizontal" value="0"/>
+            <!-- Defines a vertical widget. -->
+            <enum name="vertical" value="1"/>
+        </attr>
+
+    </declare-styleable>
+
+</resources>
