@@ -1,6 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
               xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:background="@android:color/darker_gray"
@@ -13,16 +13,15 @@
         android:layout_weight="1"
         >
 
-        <com.android.hellocsl.twowaygallery.gallery.TwoWayGallery
+        <com.android.hellocsl.twowaygallery.gallery.flow.CoverFlow
             android:id="@+id/gallery_horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_margin="30dp"
             android:background="@android:color/white"
             android:spacing="5dip"
-            app:orientation="horizontal"
             android:unselectedAlpha="50"
+            app:orientation="horizontal"
             />
     </FrameLayout>
 
@@ -32,16 +31,15 @@
         android:layout_weight="1"
         >
 
-        <com.android.hellocsl.twowaygallery.gallery.TwoWayGallery
+        <com.android.hellocsl.twowaygallery.gallery.flow.CoverFlow
             android:id="@+id/gallery_vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:layout_margin="30dp"
             android:background="@android:color/white"
             android:spacing="5dip"
-            app:orientation="vertical"
             android:unselectedAlpha="50"
+            app:orientation="vertical"
             />
     </FrameLayout>
 

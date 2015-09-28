@@ -15,14 +15,13 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.SpinnerAdapter;
+
 /**
- * An abstract base class for spinner widgets. SDK users will probably not
+ * copy from {@link android.widget.Spinner}
+ *  An abstract base class for spinner widgets. SDK users will probably not
  * need to use this class.
  *
  * @attr ref android.R.styleable#AbsSpinner_entries
- */
-
-/**
  * Created by HelloCsl(cslgogogo@gmail.com) on 2015/9/24 0024.
  */
 public abstract class TwoWaySpinner extends TwoWayAdapterView<SpinnerAdapter> {

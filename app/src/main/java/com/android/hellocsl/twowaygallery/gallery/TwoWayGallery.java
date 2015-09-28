@@ -19,26 +19,23 @@ import android.view.animation.Transformation;
 import android.widget.Scroller;
 
 import com.android.hellocsl.twowaygallery.R;
+
 /**
- * A view that shows items in a center-locked, horizontally scrolling list.
- * <p/>
+ * A view that shows items in a center-locked, horizontally or vertical scrolling list.
+ * <p>
  * The default values for the Gallery assume you will be using
  * {@link android.R.styleable#Theme_galleryItemBackground} as the background for
  * each View given to the Gallery from the Adapter. If you are not doing this,
  * you may need to adjust some Gallery properties, such as the spacing.
- * <p/>
- * Views given to the Gallery should use {@link Gallery.LayoutParams} as their
+ * <p>
+ * Views given to the Gallery should use {@link TwoWayGallery.LayoutParams} as their
  * layout parameters type.
  *
- * @attr ref android.R.styleable#Gallery_animationDuration
- * @attr ref android.R.styleable#Gallery_spacing
- * @attr ref android.R.styleable#Gallery_gravity
- * @deprecated This widget is no longer supported. Other horizontally scrolling
- * widgets include {@link HorizontalScrollView} and {@link android.support.v4.view.ViewPager}
- * from the support library.
- */
-
-/**
+ * @attr ref android.R.styleable#TwoWayGallery_animationDuration
+ * @attr ref android.R.styleable#TwoWayGallery_spacing
+ * @attr ref android.R.styleable#TwoWayGallery_gravity
+ * <p>
+ * <p>
  * Created by HelloCsl(cslgogogo@gmail.com) on 2015/9/24 0024.
  */
 public class TwoWayGallery extends TwoWaySpinner implements GestureDetector.OnGestureListener {
@@ -249,6 +246,14 @@ public class TwoWayGallery extends TwoWaySpinner implements GestureDetector.OnGe
             mOrientation = orientation;
             requestLayout();
         }
+    }
+
+    public int getOrientation() {
+        return mOrientation;
+    }
+
+    public float getUnselectedAlpha() {
+        return mUnselectedAlpha;
     }
 
     /**
@@ -583,25 +588,25 @@ public class TwoWayGallery extends TwoWaySpinner implements GestureDetector.OnGe
     /**
      * @return The center of this Gallery.
      */
-    private int getHorizontalCenterOfGallery() {
+    protected final int getHorizontalCenterOfGallery() {
         return (getWidth() - getPaddingLeft() - getPaddingRight()) / 2 + getPaddingLeft();
     }
 
     /**
      * @return The center of this Gallery.
      */
-    private int getVerticalCenterOfGallery() {
+    protected final int getVerticalCenterOfGallery() {
         return (getHeight() - getPaddingTop() - getPaddingBottom()) / 2 + getPaddingTop();
     }
 
     /**
      * @return The center of the given view.
      */
-    private static int getHorizontalCenterOfView(View view) {
+    protected final int getHorizontalCenterOfView(View view) {
         return view.getLeft() + view.getWidth() / 2;
     }
 
-    private static int getVerticalCenterOfView(View v) {
+    protected final int getVerticalCenterOfView(View v) {
         return v.getTop() + v.getHeight() / 2;
     }
 
@@ -714,7 +719,7 @@ public class TwoWayGallery extends TwoWaySpinner implements GestureDetector.OnGe
      * is the gallery's center).
      */
     private void scrollIntoSlots() {
-
+        Log.d(TAG, "scrollIntoSlots");
         if (getChildCount() == 0 || mSelectedChild == null) return;
         int selectedCenter = 0;
         int targetCenter = 0;
@@ -734,7 +739,9 @@ public class TwoWayGallery extends TwoWaySpinner implements GestureDetector.OnGe
     }
 
     private void onFinishedMovement() {
+        Log.d(TAG, "onFinishedMovement");
         if (mSuppressSelectionChanged) {
+            Log.d(TAG, "callback selection changed");
             mSuppressSelectionChanged = false;
             // We haven't been callbacking during the fling, so do it now
             super.selectionChanged();
@@ -746,6 +753,7 @@ public class TwoWayGallery extends TwoWaySpinner implements GestureDetector.OnGe
     @Override
     void selectionChanged() {
         if (!mSuppressSelectionChanged) {
+            Log.d(TAG, "selectionChanged");
             super.selectionChanged();
         }
     }
@@ -845,7 +853,7 @@ public class TwoWayGallery extends TwoWaySpinner implements GestureDetector.OnGe
 
     /**
      * Creates and positions all views for this Gallery.
-     * <p/>
+     * <p>
      * We layout rarely, most of the time {@link #trackHorizontalMotionScroll(int)} takes
      * care of repositioning, adding, and removing children.
      *
@@ -1562,10 +1570,8 @@ public class TwoWayGallery extends TwoWaySpinner implements GestureDetector.OnGe
 
         // Track the motion
         if (mOrientation == HORIZONTAL) {
-            Log.d(TAG, "onScroll:" + distanceX);
             trackHorizontalMotionScroll(-1 * (int) distanceX);//when distanceX>0,fling from right to left,the right of the selected view is appearing.
         } else {
-            Log.d(TAG, "onScroll:" + distanceY);
             trackVerticalMotionScroll(-1 * (int) distanceY);//when distanceY>0,fling from bottom to top ,the bottom of the selected view is appearing.
         }
 

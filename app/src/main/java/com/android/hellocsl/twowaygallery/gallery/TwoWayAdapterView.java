@@ -17,6 +17,7 @@ import android.view.accessibility.AccessibilityEvent;
 import android.widget.Adapter;
 
 /**
+ * copy from {@link android.widget.AdapterView}
  * An AdapterView is a view whose children are determined by an {@link Adapter}.
  * <p/>
  * <p>
@@ -28,9 +29,7 @@ import android.widget.Adapter;
  * <p>For more information about using AdapterView, read the
  * <a href="{@docRoot}guide/topics/ui/binding.html">Binding to Data with AdapterView</a>
  * developer guide.</p></div>
- */
-
-/**
+ * <p>
  * Created by HelloCsl(cslgogogo@gmail.com) on 2015/9/24 0024.
  */
 public abstract class TwoWayAdapterView<T extends Adapter> extends ViewGroup {
@@ -233,6 +232,7 @@ public abstract class TwoWayAdapterView<T extends Adapter> extends ViewGroup {
             setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_YES);
         }
     }
+
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public TwoWayAdapterView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
@@ -252,7 +252,7 @@ public abstract class TwoWayAdapterView<T extends Adapter> extends ViewGroup {
         /**
          * Callback method to be invoked when an item in this AdapterView has
          * been clicked.
-         * <p/>
+         * <p>
          * Implementers can call getItemAtPosition(position) if they need
          * to access the data associated with the selected item.
          *
@@ -318,7 +318,7 @@ public abstract class TwoWayAdapterView<T extends Adapter> extends ViewGroup {
         /**
          * Callback method to be invoked when an item in this view has been
          * clicked and held.
-         * <p/>
+         * <p>
          * Implementers can call getItemAtPosition(position) if they need to access
          * the data associated with the selected item.
          *
@@ -363,7 +363,7 @@ public abstract class TwoWayAdapterView<T extends Adapter> extends ViewGroup {
          * selected. This callback is invoked only when the newly selected
          * position is different from the previously selected position or if
          * there was no selected item.</p>
-         * <p/>
+         * <p>
          * Impelmenters can call getItemAtPosition(position) if they need to access the
          * data associated with the selected item.
          *
