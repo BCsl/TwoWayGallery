@@ -3,7 +3,6 @@ package com.android.hellocsl.twowaygallery.gallery.flow;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Matrix;
-import android.nfc.Tag;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -17,9 +16,12 @@ import com.android.hellocsl.twowaygallery.gallery.TwoWayGallery;
  */
 public class CoverFlow extends TwoWayGallery {
     private final String TAG = this.getClass().getSimpleName();
+    private final boolean DEBUG = true;
     private final float DEFAULT_UNSELECTED_SCALE = 1.0f;
-
+    private final float DEFAULT_COVERAGE = 0.1f;
+    private Matrix mHorizontalMatrix, mVerticalMatrix;
     private final float mUnselectedScale = 0.8f;
+    private float mCoverage = DEFAULT_COVERAGE;//覆盖率
 
     public CoverFlow(Context context) {
         super(context);
@@ -49,193 +51,105 @@ public class CoverFlow extends TwoWayGallery {
     @Override
     protected boolean getChildStaticTransformation(View child, Transformation t) {
         super.getChildStaticTransformation(child, t);
-        Log.d(TAG, "getChildStaticTransformation");
-        // Since Jelly Bean childs won't get invalidated automatically, needs to be added for the smooth coverflow animation
-        if (getOrientation() == HORIZONTAL) {
-            final int coverFlowWidth = this.getWidth();
+        if (getOrientation() == VERTICAL) {
+            final int coverFlowCenter = getVerticalCenterOfGallery();
+            final int childWidth = child.getWidth();
+            final int childHeight = child.getHeight();
+            final int childCenter = child.getTop() + childHeight / 2;
+            float w = childHeight;
+            boolean bottomOfCenter = childCenter - coverFlowCenter >= 0 ? true : false;
+            t.clear();
+            mVerticalMatrix = t.getMatrix();
+            //线性变化
+            float effectAmount = 1.0f * Math.abs(childCenter - coverFlowCenter) * (mUnselectedScale - 1) / w + 1;
+            if (mUnselectedScale != 1) {
+                //居中缩放
+                final float translateX = childWidth / 2.0f;
+                final float translateY = childHeight / 2.0f;
+                mVerticalMatrix.preTranslate(-translateX, -translateY);
+                mVerticalMatrix.postScale(effectAmount, effectAmount);
+                mVerticalMatrix.postTranslate(translateX, translateY);
+            }
+            if (bottomOfCenter) {
+                float preEffectAmount = 0;
+                float preCenter = childCenter - childHeight;
+                preEffectAmount = 1.0f * Math.abs(preCenter - coverFlowCenter) * (mUnselectedScale - 1) / w + 1;
+                float translateY = 0;
+                translateY = (1 - effectAmount) / 2.0f * childHeight;
+                while (preCenter > coverFlowCenter && preEffectAmount < 1) {
+                    translateY += (1 - preEffectAmount) * childHeight;
+                    preCenter -= childHeight;
+                    preEffectAmount = 1.0f * Math.abs(preCenter - coverFlowCenter) * (mUnselectedScale - 1) / w + 1;
+                }
+                mVerticalMatrix.postTranslate(0, -translateY);
+            } else {
+                float nextEffectAmount = 0;
+                float nextCenter = childCenter + childHeight;
+                nextEffectAmount = 1.0f * Math.abs(nextCenter - coverFlowCenter) * (mUnselectedScale - 1) / w + 1;
+                float translateY = 0;
+                translateY = (1 - effectAmount) / 2.0f * childHeight;
+                while (nextCenter < coverFlowCenter && nextEffectAmount < 1) {
+                    translateY += (1 - nextEffectAmount) * childHeight;
+                    nextCenter += childHeight;
+                    nextEffectAmount = 1.0f * Math.abs(nextCenter - coverFlowCenter) * (mUnselectedScale - 1) / w + 1;
+                }
+                mVerticalMatrix.postTranslate(0, translateY);
+            }
+        } else {
             final int coverFlowCenter = getHorizontalCenterOfGallery();
             final int childWidth = child.getWidth();
             final int childHeight = child.getHeight();
             final int childCenter = child.getLeft() + childWidth / 2;
-
-            final int actionDistance = (int) ((coverFlowWidth + childWidth) / 2.0f);
-            // Calculate the abstract amount for all effects.
-            float effectsAmount = Math.min(
-                    1.0f,
-                    Math.max(-1.0f, (1.0f / actionDistance)
-                            * (childCenter - coverFlowCenter)));
-
-            t.clear();
-            t.setTransformationType(Transformation.TYPE_BOTH);
-
-            if (getUnselectedAlpha() != 1) {
-                // Pass over saturation to the wrapper.
-                final float alpha = (getUnselectedAlpha() - 1)
-                        * Math.abs(effectsAmount) + 1;
-                t.setAlpha(alpha);
-            }
-//            t.setAlpha(child == getSelectedView() ? 1.0f : getUnselectedAlpha());
-
-            final Matrix scaleMatrix = t.getMatrix();
-
-            if (mUnselectedScale != 1) {
-                final float zoomAmount = 1f / 2f * (1 - Math.abs(effectsAmount))
-                        * (1 - Math.abs(effectsAmount))
-                        * (1 - Math.abs(effectsAmount)) + 0.5f;//缩放系数
-
-                final float translateX = childWidth / 2.0f;
-                final float translateY = childHeight / 2.0f;
-                scaleMatrix.preTranslate(-translateX, -translateY);//并不改变Pivot
-                scaleMatrix.postScale(zoomAmount, zoomAmount);
-                scaleMatrix.postTranslate(translateX, translateY);
-
-                if (effectsAmount != 0) {
-                    double point = 0.4;
-                    boolean rightOfCenter = effectsAmount > 0;
-                    int indicator = rightOfCenter ? -1 : 1;
-                    double translateFactor = (-1f / (point * point)
-                            * (Math.abs(effectsAmount) - point)
-                            * (Math.abs(effectsAmount) - point) + 1) * indicator;
-                    scaleMatrix
-                            .postTranslate(
-                                    (float) (Dp2Px(getContext(), 25) * translateFactor),
-                                    0);
-
-                }
-//                if (effectsAmount != 0 && effectsAmount != 0) {
-//                    boolean rightOfCenter = effectsAmount > 0;
-//                    int indicator = rightOfCenter ? -1 : 1;
-//                    scaleMatrix
-//                            .postTranslate(
-//                                    indicator * (1 - zoomAmount) / 2 * childWidth,
-//                                    0);
-//                }
-
-            }
-
-        } else {
-//            final int coverFlowHeight = this.getHeight();
-//            final int coverFlowCenter = getVerticalCenterOfGallery();
-//            final int childWidth = child.getWidth();
-//            final int childHeight = child.getHeight();
-//            final int childCenter = child.getTop() + childHeight / 2;
-//
-//            final int actionDistance = (int) ((coverFlowHeight + childHeight) / 2.0f);
-//            // Calculate the abstract amount for all effects.
-//            float effectsAmount = Math.min(
-//                    1.0f,
-//                    Math.max(-1.0f, (1.0f / actionDistance)
-//                            * (childCenter - coverFlowCenter)));
-//
-//            t.clear();
-//            t.setTransformationType(Transformation.TYPE_BOTH);
-//
-//
-//            final Matrix scaleMatrix = t.getMatrix();
-//
-//            if (mUnselectedScale != 1) {
-//                final float zoomAmount = 1f / 2f * (1 - Math.abs(effectsAmount))
-//                        * (1 - Math.abs(effectsAmount))
-//                        * (1 - Math.abs(effectsAmount)) + 0.5f;//缩放系数
-//
-//                final float translateX = childWidth / 2.0f;
-//                final float translateY = childHeight / 2.0f;
-//                scaleMatrix.preTranslate(-translateX, -translateY);
-//                scaleMatrix.postScale(zoomAmount, zoomAmount);
-//                scaleMatrix.postTranslate(translateX, translateY);
-//            }
-            final int coverFlowCenter = getVerticalCenterOfGallery();
-            final int coverFlowHeight = this.getHeight();
-            final int childWidth = child.getWidth();
-            final int childHeight = child.getHeight();
-            final int childCenter = child.getTop() + childHeight / 2;
-            float w = childHeight * 2;
+            float w = childWidth;
             boolean rightOfCenter = childCenter - coverFlowCenter >= 0 ? true : false;
-            float effectAmount = 1.0f * Math.abs(childCenter - coverFlowCenter) * (mUnselectedScale - 1) / w + 1;
             t.clear();
-            t.setTransformationType(Transformation.TYPE_BOTH);
-            if (getUnselectedAlpha() != 1) {
-                // Pass over saturation to the wrapper.
-                final float alpha = (getUnselectedAlpha() - 1)
-                        * Math.abs(effectAmount) + 1;
-                t.setAlpha(alpha);
-            }
-            final Matrix scaleMatrix = t.getMatrix();
+            mHorizontalMatrix = t.getMatrix();
+            //线性变化
+            float effectAmount = 1.0f * Math.abs(childCenter - coverFlowCenter) * (mUnselectedScale - 1) / w + 1;
             if (mUnselectedScale != 1) {
+                //居中缩放
                 final float translateX = childWidth / 2.0f;
                 final float translateY = childHeight / 2.0f;
-                scaleMatrix.preTranslate(-translateX, -translateY);
-                scaleMatrix.postScale(effectAmount, effectAmount);
-                scaleMatrix.postTranslate(translateX, translateY);
+                mHorizontalMatrix.preTranslate(-translateX, -translateY);
+                mHorizontalMatrix.postScale(effectAmount, effectAmount);
+                mHorizontalMatrix.postTranslate(translateX, translateY);
             }
             if (rightOfCenter) {
-                float previousAmount = 0;
-                float preCenter = childCenter - childHeight;
-                previousAmount = 1.0f * Math.abs(preCenter - coverFlowCenter) * (mUnselectedScale - 1) / w + 1;
-                int translateY = 0;
-                while (preCenter > coverFlowCenter) {
-                    translateY += (1 - previousAmount) / 2 * childHeight;
-                    preCenter -= childHeight;
-                    previousAmount = 1.0f * Math.abs(preCenter - coverFlowCenter) * (mUnselectedScale - 1) / w + 1;
+                float preEffectAmount = 0;
+                float preCenter = childCenter - childWidth;
+                preEffectAmount = 1.0f * Math.abs(preCenter - coverFlowCenter) * (mUnselectedScale - 1) / w + 1;
+                float translateX = 0;
+                translateX = (1 - effectAmount) / 2.0f * childWidth;
+                while (preCenter > coverFlowCenter && preEffectAmount < 1) {
+                    translateX += (1 - preEffectAmount) * childWidth;
+                    preCenter -= childWidth;
+                    preEffectAmount = 1.0f * Math.abs(preCenter - coverFlowCenter) * (mUnselectedScale - 1) / w + 1;
                 }
-                translateY += (1 - effectAmount) / 2 * childHeight;
-                Log.d(TAG, "rightOfCenter:" + -translateY);
-                scaleMatrix.postTranslate(0, -translateY);
+                mHorizontalMatrix.postTranslate(-translateX, 0);
             } else {
-                float nextAmount = 0;
-                float nextCenter = childCenter + childHeight;
-                nextAmount = 1.0f * Math.abs(nextCenter + coverFlowCenter) * (mUnselectedScale - 1) / w + 1;
-                int translateY = 0;
-                while (nextCenter < coverFlowCenter) {
-                    translateY += (1 - nextAmount) / 2 * childHeight;
-                    nextCenter += childHeight;
-                    nextAmount = 1.0f * Math.abs(nextCenter - coverFlowCenter) * (mUnselectedScale - 1) / w + 1;
+                float nextEffectAmount = 0;
+                float nextCenter = childCenter + childWidth;
+                nextEffectAmount = 1.0f * Math.abs(nextCenter - coverFlowCenter) * (mUnselectedScale - 1) / w + 1;
+                float translateX = 0;
+                translateX = (1 - effectAmount) / 2.0f * childWidth;
+                while (nextCenter < coverFlowCenter && nextEffectAmount < 1) {
+                    if (DEBUG)
+                        Log.d(TAG, "1nextAmount:" + nextEffectAmount + ",1nextEffectAmount:" + nextEffectAmount);
+                    translateX += (1 - nextEffectAmount) * childWidth;
+                    if (DEBUG)
+                        Log.d(TAG, "1translateX:" + translateX);
+                    nextCenter += childWidth;
+                    nextEffectAmount = 1.0f * Math.abs(nextCenter - coverFlowCenter) * (mUnselectedScale - 1) / w + 1;
+                    if (DEBUG)
+                        Log.d(TAG, "2nextAmount:" + nextEffectAmount + ",2nextEffectAmount:" + nextEffectAmount);
                 }
-                translateY += (1 - effectAmount) / 2 * childHeight;
-                scaleMatrix.postTranslate(0, translateY);
-                Log.d(TAG, "leftOfCenter:" + -translateY);
+                if (DEBUG)
+                    Log.d(TAG, "translateX:" + translateX);
+                mHorizontalMatrix.postTranslate(translateX, 0);
             }
-
-        }
-
-        if (android.os.Build.VERSION.SDK_INT >= 16) {
-            child.postInvalidate();
         }
         return true;
     }
 
-    @Override
-    protected int getChildDrawingOrder(int childCount, int i) {
 
-        int selectedIndex = getSelectedItemPosition()
-                - getFirstVisiblePosition();
-        if (i < selectedIndex) {
-            return i;
-        } else if (i >= selectedIndex) {
-            return childCount - 1 - i + selectedIndex;
-        } else {
-            return i;
-        }
-    }
-
-    /**
-     * @param context
-     * @param dp
-     * @return
-     */
-
-    public static int Dp2Px(Context context, float dp) {
-        final float scale = context.getResources().getDisplayMetrics().density;
-        return (int) (dp * scale + 0.5f);
-    }
-
-    /**
-     * @param context
-     * @param px
-     * @return
-     */
-    public static int Px2Dp(Context context, float px) {
-        final float scale = context.getResources().getDisplayMetrics().density;
-        return (int) (px / scale + 0.5f);
-    }
 }

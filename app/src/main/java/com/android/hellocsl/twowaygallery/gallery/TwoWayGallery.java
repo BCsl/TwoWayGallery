@@ -22,20 +22,20 @@ import com.android.hellocsl.twowaygallery.R;
 
 /**
  * A view that shows items in a center-locked, horizontally or vertical scrolling list.
- * <p>
+ * <p/>
  * The default values for the Gallery assume you will be using
  * {@link android.R.styleable#Theme_galleryItemBackground} as the background for
  * each View given to the Gallery from the Adapter. If you are not doing this,
  * you may need to adjust some Gallery properties, such as the spacing.
- * <p>
+ * <p/>
  * Views given to the Gallery should use {@link TwoWayGallery.LayoutParams} as their
  * layout parameters type.
  *
  * @attr ref android.R.styleable#TwoWayGallery_animationDuration
  * @attr ref android.R.styleable#TwoWayGallery_spacing
  * @attr ref android.R.styleable#TwoWayGallery_gravity
- * <p>
- * <p>
+ * <p/>
+ * <p/>
  * Created by HelloCsl(cslgogogo@gmail.com) on 2015/9/24 0024.
  */
 public class TwoWayGallery extends TwoWaySpinner implements GestureDetector.OnGestureListener {
@@ -570,6 +570,10 @@ public class TwoWayGallery extends TwoWaySpinner implements GestureDetector.OnGe
     private void offsetChildrenLeftAndRight(int offset) {
         for (int i = getChildCount() - 1; i >= 0; i--) {
             getChildAt(i).offsetLeftAndRight(offset);
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                //XXX maybe you can see this post:https://github.com/davidschreiber/FancyCoverFlow/issues/15
+                getChildAt(i).invalidate();
+            }
         }
     }
 
@@ -582,6 +586,10 @@ public class TwoWayGallery extends TwoWaySpinner implements GestureDetector.OnGe
     private void offsetChildrenTopAndBottom(int offset) {
         for (int i = getChildCount() - 1; i >= 0; i--) {
             getChildAt(i).offsetTopAndBottom(offset);
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                //XXX maybe you can see this post:https://github.com/davidschreiber/FancyCoverFlow/issues/15
+                getChildAt(i).invalidate();
+            }
         }
     }
 
@@ -853,7 +861,7 @@ public class TwoWayGallery extends TwoWaySpinner implements GestureDetector.OnGe
 
     /**
      * Creates and positions all views for this Gallery.
-     * <p>
+     * <p/>
      * We layout rarely, most of the time {@link #trackHorizontalMotionScroll(int)} takes
      * care of repositioning, adding, and removing children.
      *
