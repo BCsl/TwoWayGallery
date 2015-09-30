@@ -1,4 +1,4 @@
-package com.android.hellocsl.twowaygallery.gallery;
+package com.hellocsl.twowaygallery;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -18,24 +18,24 @@ import android.view.ViewGroup;
 import android.view.animation.Transformation;
 import android.widget.Scroller;
 
-import com.android.hellocsl.twowaygallery.R;
+import com.hellocsl.library.R;
 
 /**
  * A view that shows items in a center-locked, horizontally or vertical scrolling list.
- * <p/>
+ * <p>
  * The default values for the Gallery assume you will be using
  * {@link android.R.styleable#Theme_galleryItemBackground} as the background for
  * each View given to the Gallery from the Adapter. If you are not doing this,
  * you may need to adjust some Gallery properties, such as the spacing.
- * <p/>
+ * <p>
  * Views given to the Gallery should use {@link TwoWayGallery.LayoutParams} as their
  * layout parameters type.
  *
  * @attr ref android.R.styleable#TwoWayGallery_animationDuration
  * @attr ref android.R.styleable#TwoWayGallery_spacing
  * @attr ref android.R.styleable#TwoWayGallery_gravity
- * <p/>
- * <p/>
+ * <p>
+ * <p>
  * Created by HelloCsl(cslgogogo@gmail.com) on 2015/9/24 0024.
  */
 public class TwoWayGallery extends TwoWaySpinner implements GestureDetector.OnGestureListener {
@@ -180,9 +180,11 @@ public class TwoWayGallery extends TwoWaySpinner implements GestureDetector.OnGe
      */
     private int mSelectedCenterOffset;
     /**
-     *
+     * orientation of gallery
      */
     private int mOrientation = HORIZONTAL;
+
+    private boolean mAutoCycle = true;
 
 
     public TwoWayGallery(Context context) {
@@ -202,17 +204,12 @@ public class TwoWayGallery extends TwoWaySpinner implements GestureDetector.OnGe
     public TwoWayGallery(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init(context, attrs, defStyleAttr, defStyleRes);
-        // We draw the selected item last (because otherwise the item to the
-        // right overlaps it)
-//        mGroupFlags |= FLAG_USE_CHILD_DRAWING_ORDER;
-//
-//        mGroupFlags |= FLAG_SUPPORT_STATIC_TRANSFORMATIONS;
     }
 
     private void init(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         mGestureDetector = new GestureDetector(context, this);
         mGestureDetector.setIsLongpressEnabled(true);
-
+        setChildrenDrawingOrderEnabled(true);
         final TypedArray a = context.obtainStyledAttributes(
                 attrs, R.styleable.TwoWayGalleryGallery, defStyleAttr, defStyleRes);
 
@@ -570,7 +567,7 @@ public class TwoWayGallery extends TwoWaySpinner implements GestureDetector.OnGe
     private void offsetChildrenLeftAndRight(int offset) {
         for (int i = getChildCount() - 1; i >= 0; i--) {
             getChildAt(i).offsetLeftAndRight(offset);
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 //XXX maybe you can see this post:https://github.com/davidschreiber/FancyCoverFlow/issues/15
                 getChildAt(i).invalidate();
             }
@@ -586,7 +583,7 @@ public class TwoWayGallery extends TwoWaySpinner implements GestureDetector.OnGe
     private void offsetChildrenTopAndBottom(int offset) {
         for (int i = getChildCount() - 1; i >= 0; i--) {
             getChildAt(i).offsetTopAndBottom(offset);
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 //XXX maybe you can see this post:https://github.com/davidschreiber/FancyCoverFlow/issues/15
                 getChildAt(i).invalidate();
             }
@@ -861,7 +858,7 @@ public class TwoWayGallery extends TwoWaySpinner implements GestureDetector.OnGe
 
     /**
      * Creates and positions all views for this Gallery.
-     * <p/>
+     * <p>
      * We layout rarely, most of the time {@link #trackHorizontalMotionScroll(int)} takes
      * care of repositioning, adding, and removing children.
      *
@@ -1081,6 +1078,7 @@ public class TwoWayGallery extends TwoWaySpinner implements GestureDetector.OnGe
             curRightEdge = prevIterationView.getLeft() - itemSpacing;
             curPosition--;
         }
+
     }
 
     /**
@@ -1114,6 +1112,17 @@ public class TwoWayGallery extends TwoWaySpinner implements GestureDetector.OnGe
             curTopEdge = prevIterationView.getBottom() + itemSpacing;
             curPosition++;
         }
+
+//        if (mAutoCycle) {
+//            curPosition = curPosition % numItems;//next position
+//            while (curTopEdge <= galleryBottom && getChildCount() < numItems) {
+//                prevIterationView = makeAndAddVerticalView(curPosition, curPosition - mSelectedPosition,
+//                        curTopEdge, true);
+//                // Set state for next iteration
+//                curTopEdge = prevIterationView.getBottom() + itemSpacing;
+//                curPosition++;
+//            }
+//        }
     }
 
     /**
@@ -1128,7 +1137,7 @@ public class TwoWayGallery extends TwoWaySpinner implements GestureDetector.OnGe
         View prevIterationView = getChildAt(0);
         int curPosition;
         int curBottomEdge;
-
+        int numItems = mItemCount;
         if (prevIterationView != null) {
             curPosition = mFirstPosition - 1;
             curBottomEdge = prevIterationView.getTop() - itemSpacing;
@@ -1150,6 +1159,21 @@ public class TwoWayGallery extends TwoWaySpinner implements GestureDetector.OnGe
             curBottomEdge = prevIterationView.getTop() - itemSpacing;
             curPosition--;
         }
+
+//        if (mAutoCycle) {
+//            curPosition = curPosition % numItems;//pre position
+//            while (curBottomEdge > galleryTop && curPosition >= 0) {
+//                prevIterationView = makeAndAddVerticalView(curPosition, curPosition - mSelectedPosition,
+//                        curBottomEdge, false);
+//
+////                mFirstPosition = curPosition;
+//
+//                // Set state for next iteration
+//                curBottomEdge = prevIterationView.getTop() - itemSpacing;
+//                curPosition--;
+//            }
+//        }
+
     }
 
 
@@ -1336,9 +1360,9 @@ public class TwoWayGallery extends TwoWaySpinner implements GestureDetector.OnGe
         child.setSelected(offset == 0);
 
         // Get measure specs
-        int childHeightSpec = ViewGroup.getChildMeasureSpec(mHeightMeasureSpec,
+        int childHeightSpec = getChildMeasureSpec(mHeightMeasureSpec,
                 mSpinnerPadding.top + mSpinnerPadding.bottom, lp.height);
-        int childWidthSpec = ViewGroup.getChildMeasureSpec(mWidthMeasureSpec,
+        int childWidthSpec = getChildMeasureSpec(mWidthMeasureSpec,
                 mSpinnerPadding.left + mSpinnerPadding.right, lp.width);
 
         // Measure child
@@ -1389,9 +1413,9 @@ public class TwoWayGallery extends TwoWaySpinner implements GestureDetector.OnGe
         child.setSelected(offset == 0);
 
         // Get measure specs
-        int childHeightSpec = ViewGroup.getChildMeasureSpec(mHeightMeasureSpec,
+        int childHeightSpec = getChildMeasureSpec(mHeightMeasureSpec,
                 mSpinnerPadding.top + mSpinnerPadding.bottom, lp.height);
-        int childWidthSpec = ViewGroup.getChildMeasureSpec(mWidthMeasureSpec,
+        int childWidthSpec = getChildMeasureSpec(mWidthMeasureSpec,
                 mSpinnerPadding.left + mSpinnerPadding.right, lp.width);
 
         // Measure child

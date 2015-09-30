@@ -1,4 +1,4 @@
-package com.android.hellocsl.twowaygallery.gallery;
+package com.hellocsl.twowaygallery;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -29,7 +29,7 @@ import android.widget.Adapter;
  * <p>For more information about using AdapterView, read the
  * <a href="{@docRoot}guide/topics/ui/binding.html">Binding to Data with AdapterView</a>
  * developer guide.</p></div>
- * <p>
+ * <p/>
  * Created by HelloCsl(cslgogogo@gmail.com) on 2015/9/24 0024.
  */
 public abstract class TwoWayAdapterView<T extends Adapter> extends ViewGroup {
@@ -228,9 +228,6 @@ public abstract class TwoWayAdapterView<T extends Adapter> extends ViewGroup {
 
     public TwoWayAdapterView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        if (getImportantForAccessibility() == IMPORTANT_FOR_ACCESSIBILITY_AUTO) {
-            setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_YES);
-        }
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -252,7 +249,7 @@ public abstract class TwoWayAdapterView<T extends Adapter> extends ViewGroup {
         /**
          * Callback method to be invoked when an item in this AdapterView has
          * been clicked.
-         * <p>
+         * <p/>
          * Implementers can call getItemAtPosition(position) if they need
          * to access the data associated with the selected item.
          *
@@ -318,7 +315,7 @@ public abstract class TwoWayAdapterView<T extends Adapter> extends ViewGroup {
         /**
          * Callback method to be invoked when an item in this view has been
          * clicked and held.
-         * <p>
+         * <p/>
          * Implementers can call getItemAtPosition(position) if they need to access
          * the data associated with the selected item.
          *
@@ -363,7 +360,7 @@ public abstract class TwoWayAdapterView<T extends Adapter> extends ViewGroup {
          * selected. This callback is invoked only when the newly selected
          * position is different from the previously selected position or if
          * there was no selected item.</p>
-         * <p>
+         * <p/>
          * Impelmenters can call getItemAtPosition(position) if they need to access the
          * data associated with the selected item.
          *
@@ -401,7 +398,7 @@ public abstract class TwoWayAdapterView<T extends Adapter> extends ViewGroup {
 
     /**
      * Extra menu information provided to the
-     * {@link android.view.View.OnCreateContextMenuListener#onCreateContextMenu(ContextMenu, View, ContextMenu.ContextMenuInfo) }
+     * {@link OnCreateContextMenuListener#onCreateContextMenu(ContextMenu, View, ContextMenu.ContextMenuInfo) }
      * callback when a context menu is brought up for this AdapterView.
      */
     public static class AdapterContextMenuInfo implements ContextMenu.ContextMenuInfo {

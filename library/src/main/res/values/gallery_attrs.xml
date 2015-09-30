@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Reference to an array resource that will populate a list/adapter. -->
-    <attr name="entries" format="reference"/>
     <!-- Specifies how to place the content of an object, both
      on the x- and y-axis, within the object itself. -->
     <attr name="gravity">
@@ -49,13 +47,19 @@
         <!-- Sets the alpha on the items that are not selected. -->
         <attr name="unselectedAlpha" format="float"/>
         <!-- Standard orientation constant. -->
-
         <attr name="orientation">
             <!-- Defines an horizontal widget. -->
             <enum name="horizontal" value="0"/>
             <!-- Defines a vertical widget. -->
             <enum name="vertical" value="1"/>
         </attr>
+
+    </declare-styleable>
+    <declare-styleable name="CoverFlow">
+        <!-- Sets the coverage on the items that are not selected. -->
+        <attr name="coverage" format="float"/>
+        <!-- Sets the scale on the items that are not selected. -->
+        <attr name="unselectedScale" format="float"/>
 
     </declare-styleable>
 

@@ -13,14 +13,15 @@
         android:layout_weight="1"
         >
 
-        <com.android.hellocsl.twowaygallery.gallery.flow.CoverFlow
+        <com.hellocsl.twowaygallery.flow.CoverFlow
             android:id="@+id/gallery_horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:spacing="5dip"
-            android:unselectedAlpha="50"
+            app:coverage="0.2"
             app:orientation="horizontal"
+            app:unselectedAlpha="0.7"
+            app:unselectedScale="0.8"
             />
     </FrameLayout>
 
@@ -30,14 +31,15 @@
         android:layout_weight="1"
         >
 
-        <com.android.hellocsl.twowaygallery.gallery.flow.CoverFlow
+        <com.hellocsl.twowaygallery.flow.CoverFlow
             android:id="@+id/gallery_vertical"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:spacing="5dip"
-            android:unselectedAlpha="50"
             app:orientation="vertical"
+            app:spacing="2dip"
+            app:unselectedAlpha="0.7"
+            app:unselectedScale="0.8"
             />
     </FrameLayout>
 

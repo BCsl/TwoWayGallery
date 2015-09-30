@@ -1,8 +1,7 @@
-package com.android.hellocsl.twowaygallery.gallery;
+package com.hellocsl.twowaygallery;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.database.DataSetObserver;
 import android.graphics.Rect;
 import android.os.Build;
@@ -12,8 +11,6 @@ import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.SpinnerAdapter;
 
 /**
@@ -150,7 +147,7 @@ public abstract class TwoWaySpinner extends TwoWayAdapterView<SpinnerAdapter> {
     }
 
     /**
-     * @see android.view.View#measure(int, int)
+     * @see View#measure(int, int)
      * <p/>
      * Figure out the dimensions of this Spinner. The width comes from
      * the widthMeasureSpec as Spinnners can't have their width set to
@@ -159,7 +156,7 @@ public abstract class TwoWaySpinner extends TwoWayAdapterView<SpinnerAdapter> {
      */
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+        int widthMode = View.MeasureSpec.getMode(widthMeasureSpec);
         int widthSize;
         int heightSize;
 
@@ -215,7 +212,7 @@ public abstract class TwoWaySpinner extends TwoWayAdapterView<SpinnerAdapter> {
         if (needsMeasuring) {
             // No views -- just use padding
             preferredHeight = mSpinnerPadding.top + mSpinnerPadding.bottom;
-            if (widthMode == MeasureSpec.UNSPECIFIED) {
+            if (widthMode == View.MeasureSpec.UNSPECIFIED) {
                 preferredWidth = mSpinnerPadding.left + mSpinnerPadding.right;
             }
         }
@@ -308,7 +305,7 @@ public abstract class TwoWaySpinner extends TwoWayAdapterView<SpinnerAdapter> {
      * Override to prevent spamming ourselves with layout requests
      * as we place views
      *
-     * @see android.view.View#requestLayout()
+     * @see View#requestLayout()
      */
     @Override
     public void requestLayout() {
@@ -345,7 +342,7 @@ public abstract class TwoWaySpinner extends TwoWayAdapterView<SpinnerAdapter> {
         final int count = getChildCount();
         for (int i = count - 1; i >= 0; i--) {
             View child = getChildAt(i);
-            if (child.getVisibility() == View.VISIBLE) {
+            if (child.getVisibility() == VISIBLE) {
                 child.getHitRect(frame);
                 if (frame.contains(x, y)) {
                     return mFirstPosition + i;
@@ -355,7 +352,7 @@ public abstract class TwoWaySpinner extends TwoWayAdapterView<SpinnerAdapter> {
         return INVALID_POSITION;
     }
 
-    static class SavedState extends BaseSavedState {
+    static class SavedState extends View.BaseSavedState {
         long selectedId;
         int position;
 
@@ -390,8 +387,8 @@ public abstract class TwoWaySpinner extends TwoWayAdapterView<SpinnerAdapter> {
                     + " position=" + position + "}";
         }
 
-        public static final Parcelable.Creator<SavedState> CREATOR
-                = new Parcelable.Creator<SavedState>() {
+        public static final Creator<SavedState> CREATOR
+                = new Creator<SavedState>() {
             public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);
             }
