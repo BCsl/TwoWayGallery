@@ -70,4 +70,4 @@ or
 
 ## 效果
 
-![Demo](https://github.com/BCsl/TwoWayGallery/tree/master/ScreenShot.gif)
+![Demo](https://github.com/BCsl/TwoWayGallery/blob/master/ScreenShot/screenshot1.gif)
