@@ -3,6 +3,7 @@ package com.hellocsl.twowaygallery.flow;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.os.Build;
 import android.util.AttributeSet;
@@ -60,6 +61,7 @@ public class CoverFlow extends TwoWayGallery {
     @Override
     protected boolean getChildStaticTransformation(View child, Transformation t) {
         super.getChildStaticTransformation(child, t);
+        Log.d(TAG, "getChildStaticTransformation");
         if (getOrientation() == VERTICAL) {
             final int coverFlowCenter = getVerticalCenterOfGallery();
             final int childWidth = child.getWidth();
@@ -175,11 +177,4 @@ public class CoverFlow extends TwoWayGallery {
         return true;
     }
 
-    @Override
-    protected int getChildDrawingOrder(int childCount, int i) {
-        int selectedIndex = getSelectedItemPosition() - getFirstVisiblePosition();
-        int index = super.getChildDrawingOrder(childCount, i);
-        Log.d(TAG, "selectedIndex:" + selectedIndex + ",count:" + childCount + ",index:" + i + ",change:" + index);
-        return index;
-    }
 }

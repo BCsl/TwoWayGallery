@@ -40,7 +40,7 @@ public abstract class TwoWaySpinner extends TwoWayAdapterView<SpinnerAdapter> {
     /**
      * Temporary frame to hold a child View's frame rectangle
      */
-    private Rect mTouchFrame;
+    protected Rect mTouchFrame;
 
     public TwoWaySpinner(Context context) {
         super(context);
