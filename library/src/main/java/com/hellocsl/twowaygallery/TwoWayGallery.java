@@ -186,10 +186,11 @@ public class TwoWayGallery extends TwoWaySpinner implements GestureDetector.OnGe
      */
     private int mOrientation = HORIZONTAL;
 
+
     /**
      * show gallery cycle
      */
-    private boolean mAutoCycle = true;
+    private boolean mAutoCycle = false;
     /**
      * indicate whether the gallery can cycle,depending on can children fill the gallery
      */
@@ -241,9 +242,10 @@ public class TwoWayGallery extends TwoWaySpinner implements GestureDetector.OnGe
         setSpacing(spacing);
 
         float unselectedAlpha = a.getFloat(
-                R.styleable.TwoWayGalleryGallery_unselectedAlpha, 0.5f);
+                R.styleable.TwoWayGalleryGallery_unselectedAlpha, 1.0f);
         setUnselectedAlpha(unselectedAlpha);
 
+        mAutoCycle = a.getBoolean(R.styleable.TwoWayGalleryGallery_autoCycle, mAutoCycle);
         a.recycle();
     }
 
@@ -1062,44 +1064,8 @@ public class TwoWayGallery extends TwoWaySpinner implements GestureDetector.OnGe
 
 
     private void fillToGalleryLeft() {
-//        if (mIsRtl) {
-//            fillToGalleryLeftRtl();
-//        } else {
-//            fillToGalleryLeftLtr();
-//        }
         fillToGalleryLeftLtr();
     }
-
-//    private void fillToGalleryLeftRtl() {
-//        int itemSpacing = mSpacing;
-//        int galleryLeft = getPaddingLeft();
-//        int numChildren = getChildCount();
-//        int numItems = mItemCount;
-//
-//        // Set state for initial iteration
-//        View prevIterationView = getChildAt(numChildren - 1);
-//        int curPosition;
-//        int curRightEdge;
-//
-//        if (prevIterationView != null) {
-//            curPosition = mFirstPosition + numChildren;
-//            curRightEdge = prevIterationView.getLeft() - itemSpacing;
-//        } else {
-//            // No children available!
-//            mFirstPosition = curPosition = mItemCount - 1;
-//            curRightEdge = getRight() - getLeft() - getPaddingRight();
-//            mShouldStopFling = true;
-//        }
-//
-//        while (curRightEdge > galleryLeft && curPosition < mItemCount) {
-//            prevIterationView = makeAndAddHorizontalView(curPosition, curPosition - mSelectedPosition,
-//                    curRightEdge, false);
-//
-//            // Set state for next iteration
-//            curRightEdge = prevIterationView.getLeft() - itemSpacing;
-//            curPosition++;
-//        }
-//    }
 
     private void fillToGalleryLeftLtr() {
         int itemSpacing = mSpacing;
@@ -1248,44 +1214,9 @@ public class TwoWayGallery extends TwoWaySpinner implements GestureDetector.OnGe
 
 
     private void fillToGalleryRight() {
-//        if (mIsRtl) {
-//            fillToGalleryRightRtl();
-//        } else {
-//            fillToGalleryRightLtr();
-//        }
         fillToGalleryRightLtr();
     }
 
-//    private void fillToGalleryRightRtl() {
-//        int itemSpacing = mSpacing;
-//        int galleryRight = getRight() - getLeft() - getPaddingRight();
-//
-//        // Set state for initial iteration
-//        View prevIterationView = getChildAt(0);
-//        int curPosition;
-//        int curLeftEdge;
-//
-//        if (prevIterationView != null) {
-//            curPosition = mFirstPosition - 1;
-//            curLeftEdge = prevIterationView.getRight() + itemSpacing;
-//        } else {
-//            curPosition = 0;
-//            curLeftEdge = getPaddingLeft();
-//            mShouldStopFling = true;
-//        }
-//
-//        while (curLeftEdge < galleryRight && curPosition >= 0) {
-//            prevIterationView = makeAndAddHorizontalView(curPosition, curPosition - mSelectedPosition,
-//                    curLeftEdge, true);
-//
-//            // Remember some state
-//            mFirstPosition = curPosition;
-//
-//            // Set state for next iteration
-//            curLeftEdge = prevIterationView.getRight() + itemSpacing;
-//            curPosition--;
-//        }
-//    }
 
     private void fillToGalleryRightLtr() {
         int itemSpacing = mSpacing;
@@ -1315,14 +1246,17 @@ public class TwoWayGallery extends TwoWaySpinner implements GestureDetector.OnGe
             curLeftEdge = prevIterationView.getRight() + itemSpacing;
             curPosition++;
         }
-        //XXX for cycle mode.需要注意只能加载一屏幕最多mItemCount数量的Item，这种情况下不支持循环
-        while (curLeftEdge <= galleryRight && getChildCount() <= mItemCount) {
-            prevIterationView = makeAndAddHorizontalView(curPosition, curPosition - mSelectedPosition,
-                    curLeftEdge, true);
+        if (isScrollCycle()) {
+            curPosition = curPosition % numItems;//next position
+            //XXX for cycle mode.需要注意只能加载一屏幕最多mItemCount数量的Item，这种情况下不支持循环
+            while (curLeftEdge <= galleryRight && getChildCount() <= mItemCount) {
+                prevIterationView = makeAndAddHorizontalView(curPosition, curPosition - mSelectedPosition,
+                        curLeftEdge, true);
 
-            // Set state for next iteration
-            curLeftEdge = prevIterationView.getRight() + itemSpacing;
-            curPosition++;
+                // Set state for next iteration
+                curLeftEdge = prevIterationView.getRight() + itemSpacing;
+                curPosition++;
+            }
         }
     }
 

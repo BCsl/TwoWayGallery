@@ -1,6 +1,8 @@
 package com.android.hellocsl.twowaygallery;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -14,6 +16,10 @@ import com.hellocsl.twowaygallery.TwoWayGallery;
 public class CoverActivity extends Activity implements TwoWayAdapterView.OnItemSelectedListener, TwoWayAdapterView.OnItemClickListener {
     private TextView mTvVertical, mTvHorizontal;
     private TwoWayGallery mGalleryVertical;
+
+    public static Intent newIntent(Context con) {
+        return new Intent(con, CoverActivity.class);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

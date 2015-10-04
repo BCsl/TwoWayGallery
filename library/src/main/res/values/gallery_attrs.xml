@@ -39,6 +39,9 @@
     <attr name="galleryStyle" format="reference"/>
 
     <declare-styleable name="TwoWayGalleryGallery">
+
+        <attr name="autoCycle" format="boolean"/>
+
         <attr name="gravity"/>
         <!-- Sets how long a transition animation should run (in milliseconds)
              when layout has changed.  Only relevant if animation is turned on. -->
