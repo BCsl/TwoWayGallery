@@ -3,9 +3,10 @@
 
 # TwoWayGallery
 
-`TwoWayGallery`的使用和`Gallery`的一样，并在`Gallery`基础上增加了方向属性，支持垂直和水平方向
+`TwoWayGallery`的使用和`Gallery`的一样，并在`Gallery`基础上增加了方向属性，支持垂直和水平方向，通过属性`orientation`修改，默认为水平方向
 
-使用
+
+## 基本使用
 
 ```java
 //水平方向
@@ -34,6 +35,18 @@
            />
 ...
 ```
+## 支持循环模式
+
+通过修改属性`autoCycle`来支持循环模式
+
+__注意__:是否真正支持循环还需要根据实际情况来判断
+
+例如：当外部数据量为3，而整个的`TwoWayGallery`有够容纳3个Item的空间，这样的情况下是不支持循环模式的
+
+### 效果
+
+![Demo](https://github.com/BCsl/TwoWayGallery/blob/master/ScreenShot/cycle.gif)
+
 
 # CoverFlow
 
