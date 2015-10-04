@@ -39,7 +39,7 @@
     <attr name="galleryStyle" format="reference"/>
 
     <declare-styleable name="TwoWayGalleryGallery">
-
+        <attr name="flingAllow" format="boolean"/>
         <attr name="autoCycle" format="boolean"/>
 
         <attr name="gravity"/>

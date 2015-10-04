@@ -195,6 +195,10 @@ public class TwoWayGallery extends TwoWaySpinner implements GestureDetector.OnGe
      * indicate whether the gallery can cycle,depending on can children fill the gallery
      */
     private boolean mCycleAllow = false;
+    /**
+     * whether all fling gesture
+     */
+    private boolean mFlingAllow = true;
 
 
     public TwoWayGallery(Context context) {
@@ -223,29 +227,22 @@ public class TwoWayGallery extends TwoWaySpinner implements GestureDetector.OnGe
         final TypedArray a = context.obtainStyledAttributes(
                 attrs, R.styleable.TwoWayGalleryGallery, defStyleAttr, defStyleRes);
 
-        int index = a.getInt(R.styleable.TwoWayGalleryGallery_gravity, -1);
-        if (index >= 0) {
-            setGravity(index);
-        }
-        int animationDuration =
-                a.getInt(R.styleable.TwoWayGalleryGallery_animationDuration, -1);
-        if (animationDuration > 0) {
-            setAnimationDuration(animationDuration);
-        }
+        mGravity = a.getInt(R.styleable.TwoWayGalleryGallery_gravity, -1);
 
-        int orientation = a.getInt(R.styleable.TwoWayGalleryGallery_orientation, HORIZONTAL);
-        if (orientation >= 0) {
-            setOrientation(orientation);
-        }
-        int spacing =
+        mAnimationDuration =
+                a.getInt(R.styleable.TwoWayGalleryGallery_animationDuration, mAnimationDuration);
+
+        mOrientation = a.getInt(R.styleable.TwoWayGalleryGallery_orientation, HORIZONTAL);
+
+        mSpacing =
                 a.getDimensionPixelOffset(R.styleable.TwoWayGalleryGallery_spacing, 0);
-        setSpacing(spacing);
 
-        float unselectedAlpha = a.getFloat(
+        mUnselectedAlpha = a.getFloat(
                 R.styleable.TwoWayGalleryGallery_unselectedAlpha, 1.0f);
-        setUnselectedAlpha(unselectedAlpha);
 
         mAutoCycle = a.getBoolean(R.styleable.TwoWayGalleryGallery_autoCycle, mAutoCycle);
+
+        mFlingAllow = a.getBoolean(R.styleable.TwoWayGalleryGallery_flingAllow, mFlingAllow);
         a.recycle();
     }
 
@@ -1554,6 +1551,9 @@ public class TwoWayGallery extends TwoWaySpinner implements GestureDetector.OnGe
 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        if (!mFlingAllow) {
+            return false;
+        }
         if (!mShouldCallbackDuringFling) {
             // We want to suppress selection changes
 

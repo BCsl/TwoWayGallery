@@ -8,7 +8,19 @@
     <com.hellocsl.twowaygallery.TwoWayGallery
         android:id="@+id/cycle_pager"
         android:layout_width="match_parent"
-        android:layout_height="250dip"
-        app:autoCycle="true"></com.hellocsl.twowaygallery.TwoWayGallery>
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        app:autoCycle="true"
+        app:flingAllow="false"></com.hellocsl.twowaygallery.TwoWayGallery>
+
+    <com.hellocsl.twowaygallery.TwoWayGallery
+        android:id="@+id/vertical_cycle_pager"
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_marginTop="20dip"
+        android:layout_weight="1"
+        app:autoCycle="true"
+        app:flingAllow="false"
+        app:orientation="vertical"></com.hellocsl.twowaygallery.TwoWayGallery>
 
 </LinearLayout>

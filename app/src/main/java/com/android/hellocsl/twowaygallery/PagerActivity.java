@@ -22,5 +22,6 @@ public class PagerActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cycle_pager);
         ((TwoWayGallery) findViewById(R.id.cycle_pager)).setAdapter(new ImageAdapter(this));
+        ((TwoWayGallery) findViewById(R.id.vertical_cycle_pager)).setAdapter(new ImageAdapter(this));
     }
 }
