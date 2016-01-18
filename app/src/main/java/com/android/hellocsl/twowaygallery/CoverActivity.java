@@ -16,6 +16,7 @@ import com.hellocsl.twowaygallery.TwoWayGallery;
 public class CoverActivity extends Activity implements TwoWayAdapterView.OnItemSelectedListener, TwoWayAdapterView.OnItemClickListener {
     private TextView mTvVertical, mTvHorizontal;
     private TwoWayGallery mGalleryVertical;
+    private InfoAdapter mHadapter, mVadapter;
 
     public static Intent newIntent(Context con) {
         return new Intent(con, CoverActivity.class);
@@ -26,16 +27,30 @@ public class CoverActivity extends Activity implements TwoWayAdapterView.OnItemS
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
         TwoWayGallery gallery = (TwoWayGallery) findViewById(R.id.gallery_horizontal);
-        gallery.setAdapter(new InfoAdapter(this, true));
+        mHadapter = new InfoAdapter(this, true);
+        gallery.setAdapter(mHadapter);
         gallery.setOnItemSelectedListener(this);
         mGalleryVertical = (TwoWayGallery) findViewById(R.id.gallery_vertical);
         mTvHorizontal = (TextView) findViewById(R.id.tv_horizontal_info);
         mTvVertical = (TextView) findViewById(R.id.tv_vertical_info);
-        mGalleryVertical.setAdapter(new InfoAdapter(this, false));
+        mVadapter = new InfoAdapter(this, false);
+        mGalleryVertical.setAdapter(mVadapter);
         gallery.setOnItemSelectedListener(this);
         gallery.setOnItemClickListener(this);
         mGalleryVertical.setOnItemSelectedListener(this);
         mGalleryVertical.setOnItemClickListener(this);
+        mTvHorizontal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mHadapter.notifyDataSetChanged();
+            }
+        });
+        mTvVertical.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mVadapter.notifyDataSetChanged();
+            }
+        });
     }
 
     @Override

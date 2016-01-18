@@ -17,12 +17,9 @@ import android.view.accessibility.AccessibilityEvent;
 import android.widget.Adapter;
 
 /**
+ * <p>
  * copy from {@link android.widget.AdapterView}
  * An AdapterView is a view whose children are determined by an {@link Adapter}.
- * <p/>
- * <p>
- * See {@link ListView}, {@link GridView}, {@link Spinner} and
- * {@link Gallery} for commonly used subclasses of AdapterView.
  * <p/>
  * <div class="special reference">
  * <h3>Developer Guides</h3>
@@ -644,12 +641,6 @@ public abstract class TwoWayAdapterView<T extends Adapter> extends ViewGroup {
      */
     public void setEmptyView(View emptyView) {
         mEmptyView = emptyView;
-
-        // If not explicitly specified this view is important for accessibility.
-        if (emptyView != null
-                && emptyView.getImportantForAccessibility() == IMPORTANT_FOR_ACCESSIBILITY_AUTO) {
-            emptyView.setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_YES);
-        }
 
         final T adapter = getAdapter();
         final boolean empty = ((adapter == null) || adapter.isEmpty());

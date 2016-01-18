@@ -29,6 +29,7 @@
             android:layout_gravity="center"
             app:autoCycle="true"
             app:coverage="0.2"
+            app:flingAllow="true"
             app:orientation="horizontal"
             app:unselectedAlpha="0.7"
             app:unselectedScale="0.8"

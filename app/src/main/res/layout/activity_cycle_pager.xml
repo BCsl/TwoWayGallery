@@ -11,6 +11,7 @@
         android:layout_height="0dip"
         android:layout_weight="1"
         app:autoCycle="true"
+        app:spacing="10dip"
         app:flingAllow="false"></com.hellocsl.twowaygallery.TwoWayGallery>
 
     <com.hellocsl.twowaygallery.TwoWayGallery

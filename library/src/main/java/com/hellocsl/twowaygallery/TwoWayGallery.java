@@ -18,32 +18,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Transformation;
 import android.widget.Scroller;
-import android.widget.TextView;
 
 import com.hellocsl.library.R;
 
 /**
  * A view that shows items in a center-locked, horizontally or vertical scrolling list.
- * <p/>
- * The default values for the Gallery assume you will be using
- * {@link android.R.styleable#Theme_galleryItemBackground} as the background for
- * each View given to the Gallery from the Adapter. If you are not doing this,
- * you may need to adjust some Gallery properties, such as the spacing.
- * <p/>
- * Views given to the Gallery should use {@link TwoWayGallery.LayoutParams} as their
+ * Views given to the TwoWayGallery should use {@link TwoWayGallery.LayoutParams} as their
  * layout parameters type.
  *
  * @attr ref android.R.styleable#TwoWayGallery_animationDuration
  * @attr ref android.R.styleable#TwoWayGallery_spacing
  * @attr ref android.R.styleable#TwoWayGallery_gravity
- * <p/>
- * <p/>
  * Created by HelloCsl(cslgogogo@gmail.com) on 2015/9/24 0024.
  */
 public class TwoWayGallery extends TwoWaySpinner implements GestureDetector.OnGestureListener {
 
     private static final String TAG = "TwoWayGallery";
-
 
     private static final boolean localLOGV = false;
 
@@ -755,7 +745,8 @@ public class TwoWayGallery extends TwoWaySpinner implements GestureDetector.OnGe
      * is the gallery's center).
      */
     private void scrollIntoSlots() {
-        Log.d(TAG, "scrollIntoSlots");
+        if (localLOGV)
+            Log.d(TAG, "scrollIntoSlots");
         if (getChildCount() == 0 || mSelectedChild == null) return;
         int selectedCenter = 0;
         int targetCenter = 0;
@@ -775,9 +766,11 @@ public class TwoWayGallery extends TwoWaySpinner implements GestureDetector.OnGe
     }
 
     private void onFinishedMovement() {
-        Log.d(TAG, "onFinishedMovement");
+        if (localLOGV)
+            Log.d(TAG, "onFinishedMovement");
         if (mSuppressSelectionChanged) {
-            Log.d(TAG, "callback selection changed");
+            if (localLOGV)
+                Log.d(TAG, "callback selection changed");
             mSuppressSelectionChanged = false;
             // We haven't been callbacking during the fling, so do it now
             super.selectionChanged();
@@ -908,7 +901,7 @@ public class TwoWayGallery extends TwoWaySpinner implements GestureDetector.OnGe
      */
     @Override
     void layout(int delta, boolean animate) {
-        Log.d(TAG, "layout");
+//        Log.d(TAG, "layout");
         if (mOrientation == HORIZONTAL) {
             layoutHorizontal(delta, animate);
         } else {
@@ -919,7 +912,7 @@ public class TwoWayGallery extends TwoWaySpinner implements GestureDetector.OnGe
     @Override
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
-        Log.d(TAG, "dispatchDraw");
+//        Log.d(TAG, "dispatchDraw");
     }
 
     /**
@@ -1552,6 +1545,26 @@ public class TwoWayGallery extends TwoWaySpinner implements GestureDetector.OnGe
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
         if (!mFlingAllow) {
+            if (mOrientation == VERTICAL && velocityY != 0) {
+                if (velocityY < 0) {
+                    //scroll to top,show bottom
+                    int nextPosition = (mSelectedPosition + 1 - mFirstPosition + mItemCount) % mItemCount;
+                    scrollToChild(nextPosition);
+                } else {
+                    //scroll to bottom,show top
+                    int prePosition = (mSelectedPosition - 1 - mFirstPosition + mItemCount) % mItemCount;
+                    scrollToChild(prePosition);
+                }
+            } else if (mOrientation == HORIZONTAL && velocityX != 0) {
+                if (velocityX < 0) {
+                    int nextPosition = (mSelectedPosition + 1 - mFirstPosition + mItemCount) % mItemCount;//
+                    scrollToChild(nextPosition);
+                } else {
+                    int prePosition = (mSelectedPosition - 1 - mFirstPosition + mItemCount) % mItemCount;
+                    scrollToChild(prePosition);
+                }
+            }
+//            return true;
             return false;
         }
         if (!mShouldCallbackDuringFling) {
@@ -1692,7 +1705,7 @@ public class TwoWayGallery extends TwoWaySpinner implements GestureDetector.OnGe
     void onUp() {
 
         if (mFlingRunnable.mScroller.isFinished()) {
-            Log.d(TAG, "onUp-->scrollINtoSlots");
+//            Log.d(TAG, "onUp-->scrollINtoSlots");
             scrollIntoSlots();
         }
 
@@ -1849,7 +1862,6 @@ public class TwoWayGallery extends TwoWaySpinner implements GestureDetector.OnGe
         if (isScrollCycle()) {
             child = mSelectedChild = getChildAt((mSelectedPosition + mItemCount - mFirstPosition) % mItemCount);
         } else {
-
             child = mSelectedChild = getChildAt(mSelectedPosition - mFirstPosition);
         }
         if (child == null) {
@@ -1990,7 +2002,7 @@ public class TwoWayGallery extends TwoWaySpinner implements GestureDetector.OnGe
          * @param distance >0 scroll to bottom or right else to top or left
          */
         public void startUsingDistance(int distance) {
-            Log.d(TAG, "start using dis:" + distance);
+//            Log.d(TAG, "start using dis:" + distance);
             if (distance == 0) return;
 
             startCommon();

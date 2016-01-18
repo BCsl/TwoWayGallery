@@ -15,7 +15,7 @@ import android.widget.SpinnerAdapter;
 
 /**
  * copy from {@link android.widget.Spinner}
- *  An abstract base class for spinner widgets. SDK users will probably not
+ * An abstract base class for spinner widgets. SDK users will probably not
  * need to use this class.
  *
  * @attr ref android.R.styleable#AbsSpinner_entries
@@ -154,6 +154,7 @@ public abstract class TwoWaySpinner extends TwoWayAdapterView<SpinnerAdapter> {
      * UNSPECIFIED. The height is based on the height of the selected item
      * plus padding.
      */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int widthMode = View.MeasureSpec.getMode(widthMeasureSpec);
@@ -219,9 +220,13 @@ public abstract class TwoWaySpinner extends TwoWayAdapterView<SpinnerAdapter> {
 
         preferredHeight = Math.max(preferredHeight, getSuggestedMinimumHeight());
         preferredWidth = Math.max(preferredWidth, getSuggestedMinimumWidth());
-
-        heightSize = resolveSizeAndState(preferredHeight, heightMeasureSpec, 0);
-        widthSize = resolveSizeAndState(preferredWidth, widthMeasureSpec, 0);
+        if (Build.VERSION_CODES.HONEYCOMB > Build.VERSION.SDK_INT) {
+            heightSize = resolveSize(preferredHeight, heightMeasureSpec);
+            widthSize = resolveSize(preferredWidth, widthMeasureSpec);
+        } else {
+            heightSize = resolveSizeAndState(preferredHeight, heightMeasureSpec, 0);
+            widthSize = resolveSizeAndState(preferredWidth, widthMeasureSpec, 0);
+        }
 
         setMeasuredDimension(widthSize, heightSize);
         mHeightMeasureSpec = heightMeasureSpec;
